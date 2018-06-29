@@ -22,10 +22,12 @@ app.use(cors());//Cross Origin Resource Sharing
 const userRoutes = require('./routes/account');
 const mainRoutes = require('./routes/main');
 const sellerRoutes = require('./routes/seller');
+const productSearchRoutes = require('./routes/product-search');
 
 app.use('/api', mainRoutes);
 app.use('/api/accounts', userRoutes);
 app.use('/api/seller', sellerRoutes);
+app.use('/api/search',productSearchRoutes);
 
 
 app.listen(config.port, err =>{
