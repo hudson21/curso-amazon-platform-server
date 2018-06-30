@@ -204,43 +204,42 @@ router.post('/review', checkJWT, (req, res, next) => {
     ]);
 });
 
-router.post('/payment', checkJWT, (req, res, next) =>{
+router.post('/payment', checkJWT, (req, res, next) => {
     const stripeToken = req.body.stripeToken;
-    //This is because 
     const currentCharges = Math.round(req.body.totalPrice * 100);
-
+  
     stripe.customers
       .create({
-          source: stripeToken.id
+        source: stripeToken.id
       })
-      .then(function(customer){
-        return stripe.chargers.create({
-            amount: currentCharges,
-            currency: 'usd',
-            customer: customer.id
+      .then(function(customer) {
+        return stripe.charges.create({
+          amount: currentCharges,
+          currency: 'usd',
+          customer: customer.id
         });
       })
-      .then(function(charge){
+      .then(function(charge) {
         const products = req.body.products;
-
+  
         let order = new Order();
         order.owner = req.decoded.user._id;
         order.totalPrice = currentCharges;
-
-        products.map(product =>{
-            order.products.push({
-                product: product.product,
-                quantity: product.quantity
-            });
+        
+        products.map(product => {
+          order.products.push({
+            product: product.product,
+            quantity: product.quantity
+          });
         });
-
+  
         order.save();
         res.json({
-            success: true,
-            message: 'Successfullymade a payment'
+          success: true,
+          message: "Successfully made a payment"
         });
       });
-});
+  });
 
 module.exports = router;
 
